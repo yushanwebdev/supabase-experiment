@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import Logo from "@/components/logo";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
@@ -30,7 +32,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="pt-3 md:pt-6 min-h-screen container">
+            <header className="flex items-center justify-between border-b-[1px] md:border-b-0 px-6 pt-2 pb-4">
+              <Logo />
+              <ModeToggle />
+            </header>
+            <main className="pt-10 p-6">{children}</main>
+          </div>
         </ThemeProvider>
       </body>
     </html>
