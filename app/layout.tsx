@@ -11,7 +11,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Olyn Blog",
-  description: "Developed by yushanwebdev"
+  description: "Developed by yushanwebdev",
 };
 
 export default function RootLayout({
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistMono.variable} antialiased font-[family-name:var(--font-geist-mono)]`}
+        className={`${geistMono.variable} antialiased font-[family-name:var(--font-geist-mono)] bg-background`}
       >
         <ThemeProvider
           attribute="class"

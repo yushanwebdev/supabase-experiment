@@ -58,6 +58,9 @@ const config: Config = {
       },
       container: {
         center: true,
+        screens: {
+          sm: "800px",
+        },
       },
     },
   },
