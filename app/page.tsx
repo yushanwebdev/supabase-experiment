@@ -1,5 +1,3 @@
-import { ModeToggle } from "@/components/ui/mode-toggle";
-import Logo from "@/components/logo";
 import {
   Pagination,
   PaginationContent,
@@ -9,42 +7,48 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
+import { IPost } from "@/types";
 
-export default function Home() {
+async function getPosts(): Promise<Omit<IPost, "content">[]> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("id, title, author, excerpt, date")
+    .order("date", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching posts:", error);
+    return [];
+  }
+
+  return data;
+}
+
+export default async function Home() {
+  const posts = await getPosts();
+
   return (
     <>
       <ul className="flex flex-col gap-8">
-        <li className="border-b-[1px] pb-8">
-          <Link className="underline" href="/posts/1">
-            <h2 className="text-2xl">
-              The power of ChatGPT as a cognitive accessibility assistive
-              technology for Traumatic Brain Injury survivors
-            </h2>
-          </Link>
-          <p className="text-sm text-gray-500 mt-5">
-            March 14, 2023 | Yushan Fernando
-          </p>
-          <p className="mt-5">
-            This essay explores the use of ChatGPT as a cognitive accessibility
-            assistive technology for traumatic brain injury (TBI) survivors.
-          </p>
-        </li>
-        <li>
-          <a className="underline" href="/posts/1">
-            <h2 className="text-2xl">
-              The power of ChatGPT as a cognitive accessibility assistive
-              technology for Traumatic Brain Injury survivors
-            </h2>
-          </a>
-          <p className="text-sm text-gray-500 mt-5">
-            March 14, 2023 | Yushan Fernando
-          </p>
-          <p className="mt-5">
-            This essay explores the use of ChatGPT as a cognitive accessibility
-            assistive technology for traumatic brain injury (TBI) survivors.
-          </p>
-        </li>
+        {posts.map((post) => (
+          <li key={post.id} className="border-b-[1px] pb-8">
+            <Link className="underline" href={`/posts/${post.id}`}>
+              <h2 className="text-2xl">{post.title}</h2>
+            </Link>
+            <p className="text-sm text-gray-500 mt-5">
+              {/* Format date to be month day, year */}
+              {new Date(post.date).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}{" "}
+              | {post.author}
+            </p>
+            <p className="mt-5">{post.excerpt}</p>
+          </li>
+        ))}
       </ul>
       <Pagination className="mt-10">
         <PaginationContent>
